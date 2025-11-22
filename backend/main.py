@@ -29,7 +29,7 @@ app.add_middleware(
 db_config = {
     'host': 'localhost',
     'user': 'root',
-    'password': 'Harsha@2426',
+    'password': 'rootkey',
     'database': 'ecorescue'
 }
 
