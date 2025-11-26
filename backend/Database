@@ -1,0 +1,188 @@
+DROP DATABASE IF EXISTS ecorescue;
+CREATE DATABASE ecorescue;
+USE ecorescue;
+
+-- ==========================================
+-- 1. CREATE TABLES
+-- ==========================================
+CREATE TABLE Zones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    risk_level ENUM('Safe', 'Caution', 'Elevated', 'Severe') DEFAULT 'Safe',
+    color VARCHAR(50),
+    last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Shelters (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    zone_id INT,
+    name VARCHAR(255),
+    available_beds INT DEFAULT 0,
+    total_beds INT,
+    location VARCHAR(255),
+    FOREIGN KEY (zone_id) REFERENCES Zones(id)
+);
+
+CREATE TABLE Volunteers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    status ENUM('Available', 'Assigned') DEFAULT 'Available',
+    zone_id INT,
+    location VARCHAR(255),
+    FOREIGN KEY (zone_id) REFERENCES Zones(id)
+);
+
+CREATE TABLE Detections (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    zone_id INT,
+    detected_people INT,
+    detection_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    location VARCHAR(255),
+    FOREIGN KEY (zone_id) REFERENCES Zones(id)
+);
+
+CREATE TABLE Assignments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    volunteer_id INT,
+    detection_id INT,
+    shelter_id INT,
+    assignment_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('Pending', 'Completed') DEFAULT 'Pending',
+    FOREIGN KEY (volunteer_id) REFERENCES Volunteers(id),
+    FOREIGN KEY (detection_id) REFERENCES Detections(id),
+    FOREIGN KEY (shelter_id) REFERENCES Shelters(id)
+);
+
+-- ==========================================
+-- 2. INSERT DATA: ZONES
+-- ==========================================
+INSERT INTO Zones (name, risk_level, color) VALUES 
+('Indira Nagar', 'Caution', 'yellow'),          -- ID 1
+('Bellandur', 'Elevated', 'orange'),            -- ID 2
+('Electronic City Phase I', 'Safe', 'green'),   -- ID 3
+('RajaRajeshwari Nagar', 'Severe', 'red');      -- ID 4
+
+-- ==========================================
+-- 3. INSERT DATA: SHELTERS (2 per Zone)
+-- ==========================================
+INSERT INTO Shelters (zone_id, name, available_beds, total_beds, location) VALUES 
+-- Zone 1: Indira Nagar
+(1, 'Ananda Nilaya', 139, 192, '100 Feet Road'),
+(1, 'Vishwa Manava Hall', 70, 96, 'CMH Road, Metro Station'),
+
+-- Zone 2: Bellandur
+(2, 'Navajeevan Center', 122, 174, 'Outer Ring Road'),
+(2, 'Suraksha Sadan', 51, 139, 'Green Glen Layout'),
+
+-- Zone 3: Electronic City
+(3, 'Gandhi Smarak Bhavan', 85, 159, 'Hosur Road'),
+(3, 'Karuna Foundation', 52, 111, 'Phase 1, Gate 4'),
+
+-- Zone 4: RajaRajeshwari Nagar
+(4, 'RV College of Engineering', 450, 600, 'Mysore Road Entrance'),
+(4, 'Krishna Community Hall', 120, 200, 'Pattanagere');
+
+-- ==========================================
+-- 4. INSERT DATA: VOLUNTEERS (50 Members)
+-- ==========================================
+INSERT INTO Volunteers (name, status, zone_id, location) VALUES 
+('Anika Shah', 'Available', 2, 'Bellandur - Ibbalur'),
+('Anya Reddy', 'Available', 3, 'E-City - Wipro Gate'),
+('Vihaan Kumar', 'Assigned', 3, 'E-City - Phase 1'),
+('Vivaan Shah', 'Assigned', 4, 'RR Nagar - Ideal Homes'),
+('Rohan Verma', 'Available', 2, 'Bellandur - Ecospace'),
+('Vivaan Shah', 'Assigned', 4, 'RR Nagar - BEML Layout'),
+('Vivaan Verma', 'Assigned', 2, 'Bellandur - Sarjapur Jn'),
+('Anika Reddy', 'Available', 2, 'Bellandur - Green Glen'),
+('Myra Reddy', 'Available', 4, 'RR Nagar - Arcade'),
+('Ananya Shah', 'Assigned', 4, 'RR Nagar - Temple Run'),
+('Advik Shah', 'Assigned', 4, 'RR Nagar - Kenchanahalli'),
+('Advik Khan', 'Available', 4, 'RR Nagar - Jnanabharathi'),
+('Rohan Reddy', 'Assigned', 1, 'Indira Nagar - Defence Colony'),
+('Anya Khan', 'Available', 4, 'RR Nagar - Global Village'),
+('Ishita Patel', 'Available', 3, 'E-City - Neeladri Rd'),
+('Aarav Khan', 'Available', 1, 'Indira Nagar - 12th Main'),
+('Aryan Reddy', 'Assigned', 3, 'E-City - Bettadasanapura'),
+('Arjun Shah', 'Available', 1, 'Indira Nagar - ESI Hospital'),
+('Vihaan Khan', 'Assigned', 1, 'Indira Nagar - Metro'),
+('Advik Kumar', 'Assigned', 1, 'Indira Nagar - Domlur Flyover'),
+('Siya Kumar', 'Available', 1, 'Indira Nagar - Old Airport Rd'),
+('Advik Sharma', 'Assigned', 4, 'RR Nagar - Pattanagere'),
+('Arjun Singh', 'Assigned', 3, 'E-City - Toll Plaza'),
+('Priya Verma', 'Available', 3, 'E-City - Ajmera'),
+('Anya Sharma', 'Assigned', 1, 'Indira Nagar - Double Road'),
+('Aarav Reddy', 'Available', 3, 'E-City - Velankani'),
+('Arjun Kumar', 'Available', 4, 'RR Nagar - RVCE Campus'),
+('Rohan Patel', 'Available', 3, 'E-City - Infosys Gate'),
+('Vihaan Shah', 'Assigned', 1, 'Indira Nagar - HAL 2nd Stage'),
+('Rohan Sharma', 'Available', 1, 'Indira Nagar - Tippasandra'),
+('Ananya Gupta', 'Available', 3, 'E-City - Doddathoguru'),
+('Anika Kumar', 'Available', 1, 'Indira Nagar - Binnamangala'),
+('Riya Khan', 'Assigned', 4, 'RR Nagar - Kengeri'),
+('Priya Singh', 'Available', 3, 'E-City - Konappana Agrahara'),
+('Vivaan Joshi', 'Available', 1, 'Indira Nagar - 80ft Road'),
+('Siya Joshi', 'Assigned', 4, 'RR Nagar - Uttarahalli Rd'),
+('Shanaya Verma', 'Available', 2, 'Bellandur - Sobha Road'),
+('Ishaan Shah', 'Available', 2, 'Bellandur - Central Mall'),
+('Ananya Verma', 'Assigned', 3, 'E-City - Nice Road Jn'),
+('Priya Reddy', 'Available', 1, 'Indira Nagar - Cambridge Layout'),
+('Rohan Joshi', 'Available', 3, 'E-City - Shikaripalya'),
+('Ishaan Kumar', 'Assigned', 3, 'E-City - Singasandra'),
+('Anika Gupta', 'Assigned', 2, 'Bellandur - Devarabeesanahalli'),
+('Advik Joshi', 'Assigned', 4, 'RR Nagar - Mailasandra'),
+('Ishita Joshi', 'Available', 4, 'RR Nagar - Checkpost'),
+('Ananya Reddy', 'Assigned', 2, 'Bellandur - Kasavanahalli'),
+('Aarav Shah', 'Available', 3, 'E-City - Phase 2'),
+('Anya Gupta', 'Available', 2, 'Bellandur - Kaikondrahalli'),
+('Reyansh Shah', 'Available', 2, 'Bellandur - Carmelaram'),
+('Ananya Khan', 'Assigned', 2, 'Bellandur - Doddakannelli');
+
+-- ==========================================
+-- 5. INSERT DATA: DETECTIONS (Scenarios)
+-- ==========================================
+INSERT INTO Detections (zone_id, detected_people, location, detection_time) VALUES 
+-- ID 1: RR Nagar (Severe)
+(4, 310, 'RR Nagar - Mysore Road Flood Zone', NOW()),
+-- ID 2: Bellandur
+(2, 156, 'Bellandur - EcoWorld Bus Stop', NOW()),
+-- ID 3: RR Nagar (High Priority)
+(4, 85, 'RR Nagar - Pattanagere Underpass', NOW()),
+-- ID 4: RR Nagar
+(4, 120, 'RR Nagar - Ideal Homes Township', NOW()),
+-- ID 5: RR Nagar
+(4, 45, 'RR Nagar - BEML Layout 5th Stage', NOW()),
+-- ID 6: Bellandur (Flooding Risk)
+(2, 200, 'Bellandur - EcoSpace Internal Road', NOW()),
+-- ID 7: Bellandur
+(2, 60, 'Bellandur - Ibbalur Junction', NOW()),
+-- ID 8: Indira Nagar (Moderate Issues)
+(1, 15, 'Indira Nagar - 80ft Road Junction', NOW()),
+-- ID 9: Indira Nagar
+(1, 30, 'Indira Nagar - CMH Road Metro Parking', NOW()),
+-- ID 10: E-City (Minor Issues)
+(3, 10, 'E-City - Phase 1 Toll Gate', NOW()),
+-- ID 11: E-City
+(3, 5, 'E-City - Neeladri Road', NOW()),
+-- ID 12: E-City
+(3, 12, 'E-City - Velankani Tech Park Gate', NOW());
+
+-- ==========================================
+-- 6. INSERT DATA: ASSIGNMENTS
+-- ==========================================
+INSERT INTO Assignments (volunteer_id, detection_id, shelter_id, status, assignment_time) VALUES 
+-- Initial Assignments
+(10, 1, 7, 'Pending', NOW()),   -- Ananya Shah -> RR Nagar Flood (Sent to RVCE)
+(1, 2, 3, 'Completed', NOW()),  -- Anika Shah -> Bellandur Bus Stop
+
+-- New Response Assignments
+(4, 3, 7, 'Pending', NOW()),    -- Vivaan Shah -> Pattanagere Underpass (Sent to RVCE)
+(6, 3, 7, 'Pending', NOW()),    -- Vivaan Shah (Team B) -> Pattanagere
+(11, 4, 7, 'Pending', NOW()),   -- Advik Shah -> Ideal Homes (Sent to RVCE)
+(44, 5, 8, 'Pending', NOW()),   -- Advik Joshi -> BEML Layout (Sent to Krishna Hall)
+(5, 6, 3, 'Pending', NOW()),    -- Rohan Verma -> EcoSpace (Sent to Navajeevan Center)
+(37, 7, 4, 'Pending', NOW()),   -- Shanaya Verma -> Ibbalur (Sent to Suraksha Sadan)
+(13, 8, 1, 'Completed', NOW()), -- Rohan Reddy -> 80ft Road (Sent to Ananda Nilaya)
+(16, 9, 2, 'Completed', NOW()), -- Aarav Khan -> CMH Road (Sent to Vishwa Manava)
+(3, 10, 5, 'Pending', NOW()),   -- Vihaan Kumar -> Toll Gate (Sent to Gandhi Smarak)
+(15, 11, 5, 'Completed', NOW()),-- Ishita Patel -> Neeladri Road
+(17, 12, 6, 'Pending', NOW());  -- Aryan Reddy -> Velankani (Sent to Karuna Foundation)
