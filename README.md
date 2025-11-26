@@ -62,3 +62,29 @@ This repository currently contains:
   - Backend for a web/mobile emergency response app
   - Data source for dashboards (e.g., risk maps, shelter capacity views)
   - Testbed for algorithms like optimal volunteer-shelter assignment and load balancing
+
+---
+
+## Possible Extensions
+
+- **Frontend dashboard**
+  - Map-based UI showing:
+    - Zones colored by risk.
+    - Shelter capacity indicators.
+    - Live incident markers and active missions.
+
+- **Optimization / AI layer**
+  - Algorithms to:
+    - Suggest best volunteer–shelter pairing based on distance and capacity.
+    - Re-route missions when a shelter nears full capacity.
+
+- **Integration with external data**
+  - Weather, flood forecasts, or IoT sensors feeding detections.
+  - SMS / WhatsApp alert integration for volunteers and affected residents.
+
+- **Role-based access control**
+  - Separate permissions for:
+    - Admins (configure zones, shelters)
+    - Field coordinators (manage assignments)
+    - Volunteers (view assigned missions and update status)
+
